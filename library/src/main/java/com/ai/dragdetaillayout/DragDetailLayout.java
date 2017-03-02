@@ -353,19 +353,19 @@ public class DragDetailLayout extends ViewGroup {
             mTopView.setTranslationY(distance);
             mBottomView.setTranslationY(distance);
         } else if (mCurrentIndex == BOTTOM) {
-            // if (distance >= 0) {
-            // 下滑才操作
-            int topviewHeight = mTopView.getHeight();
-            mTopView.setTranslationY(-topviewHeight + distance);
-            mBottomView.setTranslationY(-topviewHeight + distance);
-            // }
+            if (distance >= 0) {
+                // 下滑才操作
+                int topviewHeight = mTopView.getHeight();
+                mTopView.setTranslationY(-topviewHeight + distance);
+                mBottomView.setTranslationY(-topviewHeight + distance);
+            }
         } else {
-            // if (distance < 0) {
-            // 上滑才有
-            int topviewHeight = mTopView.getHeight();
-            mTopView.setTranslationY(topviewHeight + distance);
-            mBottomView.setTranslationY(topviewHeight + distance);
-            // }
+            if (distance < 0) {
+                // 上滑才有
+                int topviewHeight = mTopView.getHeight();
+                mTopView.setTranslationY(topviewHeight + distance);
+                mBottomView.setTranslationY(topviewHeight + distance);
+            }
         }
         mVelocityTracker.addMovement(event);
     }
