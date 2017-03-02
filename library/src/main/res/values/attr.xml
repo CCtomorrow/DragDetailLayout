@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DragDetailLayoutOther">
+        <!--Layout的位置，默认front在前面，其中一个可以在后面-->
+        <attr name="layout_location" format="enum">
+            <enum name="front" value="0"/>
+            <enum name="behind" value="1"/>
+        </attr>
+    </declare-styleable>
+</resources>

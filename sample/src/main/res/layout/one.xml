@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ai.dragdetaillayout.DragDetailLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/behind_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_location="behind"/>
+
+    <include
+        layout="@layout/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <include
+        layout="@layout/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</com.ai.dragdetaillayout.DragDetailLayout>
