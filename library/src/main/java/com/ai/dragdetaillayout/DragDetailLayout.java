@@ -10,10 +10,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
-import static com.ai.dragdetaillayout.DragDetailLayout.CurrentPageState.BEHIND;
-import static com.ai.dragdetaillayout.DragDetailLayout.CurrentPageState.BOTTOM;
-import static com.ai.dragdetaillayout.DragDetailLayout.CurrentPageState.TOP;
-
 /**
  * <b>Project:</b> DragDetailLayout <br>
  * <b>Create Date:</b> 2017/2/28 <br>
@@ -61,19 +57,19 @@ public class DragDetailLayout extends ViewGroup {
     /**
      * 默认展示top
      */
-    private int mCurrentIndex = TOP;
+    private int mCurrentIndex = DragDetailLayoutPageState.TOP;
 
-    public class CurrentPageState {
+    public class DragDetailLayoutPageState {
         public static final int TOP = 1;
         public static final int BOTTOM = 2;
         public static final int BEHIND = 3;
 
         private int custate = 0;
 
-        public CurrentPageState() {
+        public DragDetailLayoutPageState() {
         }
 
-        public CurrentPageState(int custate) {
+        public DragDetailLayoutPageState(int custate) {
             this.custate = custate;
         }
 
@@ -86,13 +82,13 @@ public class DragDetailLayout extends ViewGroup {
         }
     }
 
-    private DragDetailLayoutOther.OnChangeListener mChangeListener;
+    private DragDetailLayoutOnChangeListener mChangeListener;
 
-    public interface OnChangeListener {
-        void onStatueChanged(DragDetailLayoutOther.CurrentPageState state);
+    public interface DragDetailLayoutOnChangeListener {
+        void onStatueChanged(DragDetailLayoutPageState state);
     }
 
-    public void setChangeListener(DragDetailLayoutOther.OnChangeListener changeListener) {
+    public void setChangeListener(DragDetailLayoutOnChangeListener changeListener) {
         mChangeListener = changeListener;
     }
 
@@ -163,7 +159,7 @@ public class DragDetailLayout extends ViewGroup {
      */
     private void upHandle() {
         int needScrollDistance;
-        if (mCurrentIndex == TOP) {
+        if (mCurrentIndex == DragDetailLayoutPageState.TOP) {
             int height = mTopView.getHeight();
             int distance = (int) mTopView.getTranslationY();
             // 当此次的滑动到了一个View的30%或者用户定义的值之后可以滑动到下一个View
@@ -175,18 +171,18 @@ public class DragDetailLayout extends ViewGroup {
                     Log.e(TAG, "滑动到behind");
                     // 下滑的，显示BehindView
                     needScrollDistance = height;
-                    mCurrentIndex = BEHIND;
+                    mCurrentIndex = DragDetailLayoutPageState.BEHIND;
                 } else {
                     Log.e(TAG, "滑动到bottom");
                     // 上滑的，显示BottomView
                     needScrollDistance = -height;
-                    mCurrentIndex = BOTTOM;
+                    mCurrentIndex = DragDetailLayoutPageState.BOTTOM;
                 }
             } else {
                 Log.e(TAG, "滑动回top");
                 // 滑回去
                 needScrollDistance = 0;
-                mCurrentIndex = TOP;
+                mCurrentIndex = DragDetailLayoutPageState.TOP;
             }
             mTopView.animate().translationYBy(needScrollDistance - mTopView.getTranslationY())
                     .setDuration(mDuration).start();
@@ -194,7 +190,7 @@ public class DragDetailLayout extends ViewGroup {
                     .setDuration(mDuration).start();
             //mTopView.setTranslationY(needScrollDistance);
             //mBottomView.setTranslationY(needScrollDistance);
-        } else if (mCurrentIndex == BOTTOM) {
+        } else if (mCurrentIndex == DragDetailLayoutPageState.BOTTOM) {
             int heiht = mBottomView.getHeight();
             int distance = (int) mBottomView.getTranslationY();
             int percentView = (int) (heiht * mPercent);
@@ -204,12 +200,12 @@ public class DragDetailLayout extends ViewGroup {
             if (couldToNext || needFlingToToggleView()) {
                 Log.e(TAG, "滑动到top");
                 needScrollDistance = 0;
-                mCurrentIndex = TOP;
+                mCurrentIndex = DragDetailLayoutPageState.TOP;
             } else {
                 Log.e(TAG, "滑动回bottom");
                 // 滑回去
                 needScrollDistance = -topHeight;
-                mCurrentIndex = BOTTOM;
+                mCurrentIndex = DragDetailLayoutPageState.BOTTOM;
             }
             mTopView.animate().translationYBy(needScrollDistance - mTopView.getTranslationY())
                     .setDuration(mDuration).start();
@@ -217,7 +213,7 @@ public class DragDetailLayout extends ViewGroup {
                     .setDuration(mDuration).start();
             //mTopView.setTranslationY(needScrollDistance);
             //mBottomView.setTranslationY(needScrollDistance);
-        } else if (mCurrentIndex == BEHIND) {
+        } else if (mCurrentIndex == DragDetailLayoutPageState.BEHIND) {
             int heiht = mBehindView.getHeight();
             // topview的translationY，是正值，这里由于上拉，会小于height
             float distance = (int) mTopView.getTranslationY();
@@ -227,11 +223,11 @@ public class DragDetailLayout extends ViewGroup {
             if (couldToNext || needFlingToToggleView()) {
                 Log.e(TAG, "滑动到top");
                 needScrollDistance = 0;
-                mCurrentIndex = TOP;
+                mCurrentIndex = DragDetailLayoutPageState.TOP;
             } else {
                 needScrollDistance = heiht;
                 Log.e(TAG, "滑动回behind");
-                mCurrentIndex = BEHIND;
+                mCurrentIndex = DragDetailLayoutPageState.BEHIND;
             }
             mTopView.animate().translationYBy(needScrollDistance - mTopView.getTranslationY())
                     .setDuration(mDuration).start();
@@ -239,6 +235,9 @@ public class DragDetailLayout extends ViewGroup {
                     .setDuration(mDuration).start();
             //mTopView.setTranslationY(needScrollDistance);
             //mBottomView.setTranslationY(needScrollDistance);
+        }
+        if (mChangeListener != null) {
+            mChangeListener.onStatueChanged(new DragDetailLayoutPageState(mCurrentIndex));
         }
     }
 
@@ -249,11 +248,11 @@ public class DragDetailLayout extends ViewGroup {
      */
     private boolean needFlingToToggleView() {
         mVelocityTracker.computeCurrentVelocity(1000, mMaxFlingVelocity);
-        if (mCurrentIndex == BEHIND) {
+        if (mCurrentIndex == DragDetailLayoutPageState.BEHIND) {
             if (-mVelocityTracker.getYVelocity() > mMiniFlingVelocity * 4) {
                 return true;
             }
-        } else if (mCurrentIndex == BOTTOM) {
+        } else if (mCurrentIndex == DragDetailLayoutPageState.BOTTOM) {
             if (mVelocityTracker.getYVelocity() > mMiniFlingVelocity * 4) {
                 return true;
             }
@@ -288,23 +287,23 @@ public class DragDetailLayout extends ViewGroup {
             boolean isScrollY = Math.abs(yDiff) > mTouchSlop && Math.abs(yDiff) >= Math.abs(xDiff);
 
             // top拦截的情况
-            boolean interceptTop = mCurrentIndex == TOP && (
+            boolean interceptTop = mCurrentIndex == DragDetailLayoutPageState.TOP && (
                     // 顶部的时候，拦截下拉
                     (mTopView.getScrollY() <= 0 && yDiff >= 0)
                             // 底部，拦截上拉
                             || (mTopView.getScrollY() >= 0 && yDiff <= 0));
             // behind拦截上拉
-            boolean interceptTopBehind = mCurrentIndex == BEHIND &&
+            boolean interceptBehind = mCurrentIndex == DragDetailLayoutPageState.BEHIND &&
                     (mBehindView.getScrollY() >= 0 && yDiff <= 0);
             // bottom拦截下拉
-            boolean interceptTopBottom = mCurrentIndex == BOTTOM &&
+            boolean interceptBottom = mCurrentIndex == DragDetailLayoutPageState.BOTTOM &&
                     (mBottomView.getScrollY() <= 0 && yDiff >= 0);
 
             Log.e(TAG, "interceptTop:" + interceptTop);
-            Log.e(TAG, "interceptTopBehind:" + interceptTopBehind);
-            Log.e(TAG, "interceptTopBottom:" + interceptTopBottom);
+            Log.e(TAG, "interceptBehind:" + interceptBehind);
+            Log.e(TAG, "interceptBottom:" + interceptBottom);
 
-            if (isScrollY && (interceptTop || interceptTopBehind || interceptTopBottom)) {
+            if (isScrollY && (interceptTop || interceptBehind || interceptBottom)) {
                 return true;
             }
         }
@@ -349,10 +348,10 @@ public class DragDetailLayout extends ViewGroup {
     private void scrolltoPosition(MotionEvent event) {
         float distance = event.getY() - mInitialInterceptY;
         // 滑动，上滑为正，下滑为负
-        if (mCurrentIndex == TOP) {
+        if (mCurrentIndex == DragDetailLayoutPageState.TOP) {
             mTopView.setTranslationY(distance);
             mBottomView.setTranslationY(distance);
-        } else if (mCurrentIndex == BOTTOM) {
+        } else if (mCurrentIndex == DragDetailLayoutPageState.BOTTOM) {
             if (distance >= 0) {
                 // 下滑才操作
                 int topviewHeight = mTopView.getHeight();
@@ -402,9 +401,9 @@ public class DragDetailLayout extends ViewGroup {
      * @return
      */
     public View getCurrentTargetView() {
-        if (mCurrentIndex == TOP) {
+        if (mCurrentIndex == DragDetailLayoutPageState.TOP) {
             return mTopView;
-        } else if (mCurrentIndex == BOTTOM) {
+        } else if (mCurrentIndex == DragDetailLayoutPageState.BOTTOM) {
             return mBottomView;
         } else {
             return mBehindView;
@@ -549,7 +548,7 @@ public class DragDetailLayout extends ViewGroup {
         return p instanceof DragDetailLayoutParams;
     }
 
-    public class DragDetailLayoutParams extends MarginLayoutParams {
+    private class DragDetailLayoutParams extends MarginLayoutParams {
 
         /**
          * 默认在前面，有一个View可以在其他View的后面

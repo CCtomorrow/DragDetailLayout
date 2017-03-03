@@ -21,5 +21,12 @@
         android:text="two，不拦截，onInterceptTouchEvent里面处理滑动"
         android:textAllCaps="false"/>
 
+    <Button
+        android:id="@+id/three"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="两个可以上下拖动的Layout"
+        android:textAllCaps="false"/>
+
 
 </LinearLayout>

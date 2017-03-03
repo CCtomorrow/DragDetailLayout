@@ -14,17 +14,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         Button one = (Button) findViewById(R.id.one);
         Button two = (Button) findViewById(R.id.two);
+        Button three = (Button) findViewById(R.id.three);
         one.setOnClickListener(this);
         two.setOnClickListener(this);
+        three.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(this, DisplayAct.class);
         if (v.getId() == R.id.one) {
-            intent.putExtra("one", true);
+            intent.putExtra("current", 1);
         } else if (v.getId() == R.id.two) {
-            intent.putExtra("one", false);
+            intent.putExtra("current", 2);
+        } else {
+            intent.putExtra("current", 3);
         }
         startActivity(intent);
     }

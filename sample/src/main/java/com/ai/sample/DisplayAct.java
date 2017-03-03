@@ -8,10 +8,17 @@ public class DisplayAct extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getIntent().getBooleanExtra("one", true)) {
-            setContentView(R.layout.one);
-        } else {
-            setContentView(R.layout.two);
+        int current = getIntent().getIntExtra("current", 1);
+        switch (current) {
+            case 1:
+                setContentView(R.layout.one);
+                break;
+            case 2:
+                setContentView(R.layout.two);
+                break;
+            default:
+                setContentView(R.layout.three);
+                break;
         }
     }
 }
