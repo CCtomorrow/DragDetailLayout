@@ -58,7 +58,12 @@ public class SlidingBehindLayout extends ViewGroup {
      */
     private int mCurrentIndex = SlidingBehindLayoutPageState.FRONT;
 
-    private class SlidingBehindLayoutPageState {
+    /**
+     * 是不是允许拦截事件，默认允许
+     */
+    private boolean mInterceptEvent = true;
+
+    public class SlidingBehindLayoutPageState {
         public static final int FRONT = 1;
         public static final int BEHIND = 2;
 
@@ -110,13 +115,25 @@ public class SlidingBehindLayout extends ViewGroup {
         super.onFinishInflate();
         mBehindView = getChildAt(0);
         mFrontView = getChildAt(1);
+        mBehindView.setAlpha(0);
+        mFrontView.setAlpha(1);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         // 允许拦截事件
-        requestDisallowInterceptTouchEvent(false);
+        requestDisallowInterceptTouchEvent(!mInterceptEvent);
         return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * 是否允许拦截事件，true允许拦截，false不允许拦截
+     *
+     * @param intercept
+     */
+    public void interceptEvent(boolean intercept) {
+        if (intercept == mInterceptEvent) return;
+        mInterceptEvent = intercept;
     }
 
     @Override
@@ -156,6 +173,7 @@ public class SlidingBehindLayout extends ViewGroup {
      */
     private void upHandle() {
         int needScrollDistance;
+        int needScrollAlpha;
         if (mCurrentIndex == SlidingBehindLayoutPageState.FRONT) {
             int height = mFrontView.getHeight();
             int distance = (int) mFrontView.getTranslationY();
@@ -163,16 +181,28 @@ public class SlidingBehindLayout extends ViewGroup {
             boolean couldToNext = Math.abs(distance) >= percentView;
             if (couldToNext || needFlingToToggleView()) {
                 Log.e(TAG, "滑动到behind");
+                // FrontView最终到达的值
                 needScrollDistance = height;
+                needScrollAlpha = 0;
                 mCurrentIndex = SlidingBehindLayoutPageState.BEHIND;
             } else {
                 Log.e(TAG, "滑动回front");
-                // 滑回去
                 needScrollDistance = 0;
+                needScrollAlpha = 1;
                 mCurrentIndex = SlidingBehindLayoutPageState.FRONT;
             }
-            mFrontView.animate().translationYBy(needScrollDistance - mFrontView.getTranslationY())
-                    .setDuration(mDuration).start();
+            Log.e(TAG, "alpha===>FrontView:" + mFrontView.getAlpha() + "===>BehindView:" + mBehindView.getAlpha());
+            mFrontView
+                    .animate()
+                    .translationYBy(needScrollDistance - mFrontView.getTranslationY())
+                    .alphaBy(needScrollAlpha - mFrontView.getAlpha())
+                    .setDuration(mDuration)
+                    .start();
+            mBehindView
+                    .animate()
+                    .alphaBy((1 - mBehindView.getAlpha() - needScrollAlpha))
+                    .setDuration(mDuration)
+                    .start();
             //mTopView.setTranslationY(needScrollDistance);
             //mBottomView.setTranslationY(needScrollDistance);
         } else if (mCurrentIndex == SlidingBehindLayoutPageState.BEHIND) {
@@ -184,15 +214,28 @@ public class SlidingBehindLayout extends ViewGroup {
             boolean couldToNext = Math.abs(distance) >= percentView;
             if (couldToNext || needFlingToToggleView()) {
                 Log.e(TAG, "滑动到front");
+                // FrontView最终到达的值
                 needScrollDistance = 0;
+                needScrollAlpha = 1;
                 mCurrentIndex = SlidingBehindLayoutPageState.FRONT;
             } else {
-                needScrollDistance = heiht;
                 Log.e(TAG, "滑动回behind");
+                needScrollDistance = heiht;
+                needScrollAlpha = 0;
                 mCurrentIndex = SlidingBehindLayoutPageState.BEHIND;
             }
-            mFrontView.animate().translationYBy(needScrollDistance - mFrontView.getTranslationY())
-                    .setDuration(mDuration).start();
+            Log.e(TAG, "alpha===>FrontView:" + mFrontView.getAlpha() + "===>BehindView:" + mBehindView.getAlpha());
+            mFrontView
+                    .animate()
+                    .translationYBy(needScrollDistance - mFrontView.getTranslationY())
+                    .alphaBy(needScrollAlpha - mFrontView.getAlpha())
+                    .setDuration(mDuration)
+                    .start();
+            mBehindView
+                    .animate()
+                    .alphaBy(1 - mBehindView.getAlpha() - needScrollAlpha)
+                    .setDuration(mDuration)
+                    .start();
             //mTopView.setTranslationY(needScrollDistance);
             //mBottomView.setTranslationY(needScrollDistance);
         }
@@ -271,6 +314,7 @@ public class SlidingBehindLayout extends ViewGroup {
     private boolean canScrollVertically(View view, int offSet, MotionEvent ev) {
         // 如果没有Touch到当前的View上面
         if (!isTouchedView(ev, view)) {
+            Log.e(TAG, "canScrollVertically==>isTouchedView()");
             return false;
         }
         // 关于这个方法的解释，官方的其实不靠谱
@@ -295,16 +339,25 @@ public class SlidingBehindLayout extends ViewGroup {
      */
     private void scrolltoPosition(MotionEvent event) {
         float distance = event.getY() - mInitialInterceptY;
+        // 滑动的这个距离占整个BehindView的百分百
+        float percent = Math.abs(distance) / mBehindView.getHeight();
+        Log.e(TAG, "alpha===>distance:" + distance + "===>percent:" + percent);
         if (mCurrentIndex == SlidingBehindLayoutPageState.FRONT) {
             if (distance >= 0) {
                 // 下滑才操作
                 mFrontView.setTranslationY(distance);
+                mFrontView.setAlpha(1 - percent);
+                mBehindView.setAlpha(percent);
+                Log.e(TAG, "alpha===>FrontView:" + mFrontView.getAlpha() + "===>BehindView:" + mBehindView.getAlpha());
             }
         } else {
             if (distance < 0) {
                 // 上滑才有
                 int topviewHeight = mFrontView.getHeight();
                 mFrontView.setTranslationY(topviewHeight + distance);
+                mFrontView.setAlpha(percent);
+                mBehindView.setAlpha(1 - percent);
+                Log.e(TAG, "alpha===>FrontView:" + mFrontView.getAlpha() + "===>BehindView:" + mBehindView.getAlpha());
             }
         }
         mVelocityTracker.addMovement(event);
