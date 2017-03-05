@@ -2,6 +2,7 @@ package com.ai.dragdetaillayout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -59,6 +60,11 @@ public class DragDetailLayout extends ViewGroup {
      */
     private int mCurrentIndex = DragDetailLayoutPageState.TOP;
 
+    @IntDef(value = {DragDetailLayoutPageState.TOP, DragDetailLayoutPageState.BOTTOM, DragDetailLayoutPageState.BEHIND})
+    public @interface IndexMask {
+
+    }
+
     public class DragDetailLayoutPageState {
         public static final int TOP = 1;
         public static final int BOTTOM = 2;
@@ -105,6 +111,27 @@ public class DragDetailLayout extends ViewGroup {
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         mMaxFlingVelocity = ViewConfiguration.get(getContext()).getScaledMaximumFlingVelocity();
         mMiniFlingVelocity = ViewConfiguration.get(getContext()).getScaledMinimumFlingVelocity();
+    }
+
+    /**
+     * 设置显示哪个Layout
+     *
+     * @param index {@link DragDetailLayoutPageState#TOP} or {@link DragDetailLayoutPageState#BOTTOM} or {@link DragDetailLayoutPageState#BEHIND}
+     */
+    public void switchIndex(@IndexMask int index) {
+        if (mCurrentIndex == index) return;
+        mCurrentIndex = index;
+        switch (index) {
+            case DragDetailLayoutPageState.TOP:
+                smtoTop();
+                break;
+            case DragDetailLayoutPageState.BOTTOM:
+                smtoBottom();
+                break;
+            case DragDetailLayoutPageState.BEHIND:
+                smtoBehind();
+                break;
+        }
     }
 
     @Override
@@ -155,10 +182,85 @@ public class DragDetailLayout extends ViewGroup {
     }
 
     /**
+     * 滑动到top
+     */
+    public void smtoTop() {
+        // TODO: 2017/3/6 透明度处理
+        // topView最后translationY到达0
+        // 1230--->0 -1230需要滑动
+        int needScrollDistance = 0;
+        mTopView
+                .animate()
+                .translationYBy(needScrollDistance - mTopView.getTranslationY())
+                .setDuration(mDuration)
+                .start();
+        mBottomView
+                .animate()
+                .translationYBy(needScrollDistance - mBottomView.getTranslationY())
+                .setDuration(mDuration)
+                .start();
+        // 1--->0
+//        mBehindView
+//                .animate()
+//                .alpha(-mBehindView.getAlpha())
+//                .setDuration(mDuration)
+//                .start();
+    }
+
+    /**
+     * 滑动到bottom
+     */
+    public void smtoBottom() {
+        // topView最后translationY到达-mTopView.getHeight()
+        // 123--->-mTopView.getHeight() -mTopView.getHeight()-123需要滑动
+        int needScrollDistance = -mTopView.getHeight();
+        mTopView
+                .animate()
+                .translationYBy(needScrollDistance - mTopView.getTranslationY())
+                .setDuration(mDuration)
+                .start();
+        mBottomView
+                .animate()
+                .translationYBy(needScrollDistance - mBottomView.getTranslationY())
+                .setDuration(mDuration)
+                .start();
+        // 1--->0
+//        mBehindView
+//                .animate()
+//                .alpha(-mBehindView.getAlpha())
+//                .setDuration(mDuration)
+//                .start();
+    }
+
+    /**
+     * 滑动到behind
+     */
+    public void smtoBehind() {
+        // topView最后translationY到达mTopView.getHeight()
+        // 123--->mTopView.getHeight() mTopView.getHeight()-123需要滑动
+        int needScrollDistance = mTopView.getHeight();
+        mTopView
+                .animate()
+                .translationYBy(needScrollDistance - mTopView.getTranslationY())
+                .setDuration(mDuration)
+                .start();
+        mBottomView
+                .animate()
+                .translationYBy(needScrollDistance - mBottomView.getTranslationY())
+                .setDuration(mDuration)
+                .start();
+        // 0--->1
+//        mBehindView
+//                .animate()
+//                .alpha(1 - mBehindView.getAlpha())
+//                .setDuration(mDuration)
+//                .start();
+    }
+
+    /**
      * up或者cancel事件的处理
      */
     private void upHandle() {
-        int needScrollDistance;
         if (mCurrentIndex == DragDetailLayoutPageState.TOP) {
             int height = mTopView.getHeight();
             int distance = (int) mTopView.getTranslationY();
@@ -170,71 +272,53 @@ public class DragDetailLayout extends ViewGroup {
                 if (distance > 0) {
                     Log.e(TAG, "滑动到behind");
                     // 下滑的，显示BehindView
-                    needScrollDistance = height;
+                    smtoBehind();
                     mCurrentIndex = DragDetailLayoutPageState.BEHIND;
                 } else {
                     Log.e(TAG, "滑动到bottom");
                     // 上滑的，显示BottomView
-                    needScrollDistance = -height;
+                    smtoBottom();
                     mCurrentIndex = DragDetailLayoutPageState.BOTTOM;
                 }
             } else {
                 Log.e(TAG, "滑动回top");
                 // 滑回去
-                needScrollDistance = 0;
+                smtoTop();
                 mCurrentIndex = DragDetailLayoutPageState.TOP;
             }
-            mTopView.animate().translationYBy(needScrollDistance - mTopView.getTranslationY())
-                    .setDuration(mDuration).start();
-            mBottomView.animate().translationYBy(needScrollDistance - mBottomView.getTranslationY())
-                    .setDuration(mDuration).start();
-            //mTopView.setTranslationY(needScrollDistance);
-            //mBottomView.setTranslationY(needScrollDistance);
         } else if (mCurrentIndex == DragDetailLayoutPageState.BOTTOM) {
-            int heiht = mBottomView.getHeight();
+            int height = mBottomView.getHeight();
             int distance = (int) mBottomView.getTranslationY();
-            int percentView = (int) (heiht * mPercent);
+            int percentView = (int) (height * mPercent);
             int topHeight = mTopView.getHeight();
             distance = distance + topHeight;
             boolean couldToNext = Math.abs(distance) >= percentView;
             if (couldToNext || needFlingToToggleView()) {
                 Log.e(TAG, "滑动到top");
-                needScrollDistance = 0;
+                smtoTop();
                 mCurrentIndex = DragDetailLayoutPageState.TOP;
             } else {
                 Log.e(TAG, "滑动回bottom");
                 // 滑回去
-                needScrollDistance = -topHeight;
+                smtoBottom();
                 mCurrentIndex = DragDetailLayoutPageState.BOTTOM;
             }
-            mTopView.animate().translationYBy(needScrollDistance - mTopView.getTranslationY())
-                    .setDuration(mDuration).start();
-            mBottomView.animate().translationYBy(needScrollDistance - mBottomView.getTranslationY())
-                    .setDuration(mDuration).start();
-            //mTopView.setTranslationY(needScrollDistance);
-            //mBottomView.setTranslationY(needScrollDistance);
         } else if (mCurrentIndex == DragDetailLayoutPageState.BEHIND) {
-            int heiht = mBehindView.getHeight();
+            int height = mBehindView.getHeight();
             // topview的translationY，是正值，这里由于上拉，会小于height
             float distance = (int) mTopView.getTranslationY();
-            int percentView = (int) (heiht * mPercent);
-            distance = heiht - distance; // 已经上拉的部分，只要这个高度>=30%的height即表示可以滑动到TopView的位置
+            int percentView = (int) (height * mPercent);
+            distance = height - distance; // 已经上拉的部分，只要这个高度>=30%的height即表示可以滑动到TopView的位置
             boolean couldToNext = Math.abs(distance) >= percentView;
             if (couldToNext || needFlingToToggleView()) {
                 Log.e(TAG, "滑动到top");
-                needScrollDistance = 0;
+                smtoTop();
                 mCurrentIndex = DragDetailLayoutPageState.TOP;
             } else {
-                needScrollDistance = heiht;
                 Log.e(TAG, "滑动回behind");
+                smtoBehind();
                 mCurrentIndex = DragDetailLayoutPageState.BEHIND;
             }
-            mTopView.animate().translationYBy(needScrollDistance - mTopView.getTranslationY())
-                    .setDuration(mDuration).start();
-            mBottomView.animate().translationYBy(needScrollDistance - mBottomView.getTranslationY())
-                    .setDuration(mDuration).start();
-            //mTopView.setTranslationY(needScrollDistance);
-            //mBottomView.setTranslationY(needScrollDistance);
         }
         if (mChangeListener != null) {
             mChangeListener.onStatueChanged(new DragDetailLayoutPageState(mCurrentIndex));
@@ -244,7 +328,7 @@ public class DragDetailLayout extends ViewGroup {
     /**
      * 检测速度，如果速度到了还是需要滑动的
      *
-     * @return
+     * @return 速度达到一定值，就算距离没达到也可以滑动到下一个Layout去
      */
     private boolean needFlingToToggleView() {
         mVelocityTracker.computeCurrentVelocity(1000, mMaxFlingVelocity);
@@ -266,12 +350,13 @@ public class DragDetailLayout extends ViewGroup {
 
     /**
      * 是否需要拦截事件
-     * 1.TopView的顶部
-     * 2.TopView的底部
-     * 3.BottomView的顶部
+     * 1.BehindView的底部
+     * 2.TopView的顶部
+     * 3.TopView的底部
+     * 4.BottomView的顶部
      *
-     * @param ev
-     * @return
+     * @param ev MotionEvent
+     * @return 是否需要拦截事件
      */
     private boolean checkShouldInterceptEvent(MotionEvent ev) {
         // 获取当前在哪个界面
@@ -318,7 +403,7 @@ public class DragDetailLayout extends ViewGroup {
      * @param view   view
      * @param offSet 方向
      * @param ev     MotionEvent
-     * @return
+     * @return 在某个方向是否可以滑动
      */
     private boolean canScrollVertically(View view, int offSet, MotionEvent ev) {
         // 如果没有Touch到当前的View上面
@@ -398,7 +483,7 @@ public class DragDetailLayout extends ViewGroup {
     /**
      * 获取当前的操作的Layout
      *
-     * @return
+     * @return {@link DragDetailLayout#mBehindView} or {@link DragDetailLayout#mTopView} or {@link DragDetailLayout#mBottomView}
      */
     public View getCurrentTargetView() {
         if (mCurrentIndex == DragDetailLayoutPageState.TOP) {
@@ -574,7 +659,6 @@ public class DragDetailLayout extends ViewGroup {
             super(source);
         }
     }
-
     //================LayoutParams================
 
 }
