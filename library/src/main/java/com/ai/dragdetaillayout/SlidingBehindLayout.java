@@ -130,6 +130,18 @@ public class SlidingBehindLayout extends ViewGroup {
         }
     }
 
+    public int getCurrentIndex() {
+        return mCurrentIndex;
+    }
+
+    public View getFrontView() {
+        return mFrontView;
+    }
+
+    public View getBehindView() {
+        return mBehindView;
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -300,8 +312,8 @@ public class SlidingBehindLayout extends ViewGroup {
 
     /**
      * 是否需要拦截事件
-     * 2.mFrontView的底部
-     * 3.mBehindView的顶部
+     * 1.mFrontView的底部
+     * 2.mBehindView的顶部
      *
      * @param ev MotionEvent
      * @return 是否需要拦截事件
@@ -316,6 +328,7 @@ public class SlidingBehindLayout extends ViewGroup {
         boolean result = canScrollVertically(currentTargetView, (int) -yDiff, ev);
         if (!result) { // 不能滑动
             mInitialInterceptY = ev.getY();
+            if (yDiff == 0) return false;
             // 是在Y轴方向上滑动，即是竖直滑动的
             boolean isScrollY = Math.abs(yDiff) > mTouchSlop && Math.abs(yDiff) >= Math.abs(xDiff);
 
@@ -335,8 +348,9 @@ public class SlidingBehindLayout extends ViewGroup {
                 return true;
             }
         }
-        Log.e(TAG, "Height:" + currentTargetView.getHeight()
-                + "===>ScrollY:" + currentTargetView.getScrollY());
+//        Log.e(TAG, "Height:" + currentTargetView.getHeight()
+//                + "===>ScrollY:" + currentTargetView.getScrollY()
+//                + "===>yDiff:" + yDiff);
         return false;
     }
 
@@ -351,23 +365,21 @@ public class SlidingBehindLayout extends ViewGroup {
     private boolean canScrollVertically(View view, int offSet, MotionEvent ev) {
         // 如果没有Touch到当前的View上面
         if (!isTouchedView(ev, view)) {
-            Log.e(TAG, "canScrollVertically==>isTouchedView()=false");
             return false;
         }
         // 关于这个方法的解释，官方的其实不靠谱
-        if (view.canScrollVertically(offSet)) {
-            Log.e(TAG, "canScrollVertically==>canScrollVertically()=true");
-            return true;
-        }
-        if (view instanceof ViewGroup) {
-            ViewGroup vGroup = (ViewGroup) view;
-            for (int i = 0; i < vGroup.getChildCount(); i++) {
-                if (canScrollVertically(vGroup.getChildAt(i), offSet, ev)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return canViewScrollVertically(view, offSet);
+    }
+
+    /**
+     * View在某个方向是否可以滑动
+     * 子类如果要自己去实现判断的方法可以自行实现，可能需要{@link #getCurrentIndex()}拿到当前是在Front还是Behind然后进行判断
+     *
+     * @param direction 负数表示是否可以下滑，正数表示是否可以上滑
+     * @return 是否可以滑动
+     */
+    public boolean canViewScrollVertically(View view, int direction) {
+        return view.canScrollVertically(direction);
     }
 
     /**
