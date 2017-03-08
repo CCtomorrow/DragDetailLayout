@@ -134,6 +134,10 @@ public class DragDetailLayout extends ViewGroup {
         }
     }
 
+    public int getCurrentIndex() {
+        return mCurrentIndex;
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -173,6 +177,32 @@ public class DragDetailLayout extends ViewGroup {
                 recycleVelocityTracker();
                 break;
             case MotionEvent.ACTION_MOVE:
+                float distance = ev.getY() - mInitialInterceptY;
+                if (mCurrentIndex == DragDetailLayoutPageState.BEHIND) {
+                    if (distance > 0) {
+                        // 下拉把事件传递给子View
+                        mBehindView.dispatchTouchEvent(ev);
+                        return false;
+                    }
+                } else if (mCurrentIndex == DragDetailLayoutPageState.BOTTOM) {
+                    if (distance < 0) {
+                        // 上拉把事件传递给子View
+                        mBottomView.dispatchTouchEvent(ev);
+                        return false;
+                    }
+                } else if (mCurrentIndex == DragDetailLayoutPageState.TOP) {
+                    //顶部处理上拉
+                    if (distance < 0 && mTopView.getScrollY() < 0) {
+                        mTopView.dispatchTouchEvent(ev);
+                        return false;
+                    }
+                    // 底部处理下拉
+                    if (distance > 0 && mTopView.getScrollY() > mTopView.getHeight() / 2) {
+                        mTopView.dispatchTouchEvent(ev);
+                        return false;
+                    }
+
+                }
                 scrolltoPosition(ev);
                 break;
             default:
@@ -410,6 +440,7 @@ public class DragDetailLayout extends ViewGroup {
         if (!isTouchedView(ev, view)) {
             return false;
         }
+        // TODO: 2017/3/8 把事件放出去让子View处理
         // 关于这个方法的解释，官方的其实不靠谱
         if (view.canScrollVertically(offSet)) {
             return true;

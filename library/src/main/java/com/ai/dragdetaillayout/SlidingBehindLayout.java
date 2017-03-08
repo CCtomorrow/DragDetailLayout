@@ -91,6 +91,9 @@ public class SlidingBehindLayout extends ViewGroup {
         }
     }
 
+    /**
+     * 内部View滑动完成的回调
+     */
     private SlidingBehindLayoutOnChangeListener mChangeListener;
 
     public interface SlidingBehindLayoutOnChangeListener {
@@ -99,6 +102,25 @@ public class SlidingBehindLayout extends ViewGroup {
 
     public void setChangeListener(SlidingBehindLayoutOnChangeListener changeListener) {
         mChangeListener = changeListener;
+    }
+
+    /**
+     * 子view是否可以滑动的回调，可以通过它，就不用覆盖实现{@link SlidingBehindLayout#canViewScrollVertically(View, int)}
+     */
+    private OnChildScrollCallback mScrollCallback;
+
+    public interface OnChildScrollCallback {
+        /**
+         * @param parent    父View
+         * @param child     当前操作的View
+         * @param direction 负数表示是否可以下滑，正数表示是否可以上滑
+         * @return 是否子某个方向上还能继续滑动
+         */
+        boolean canScrollVertically(SlidingBehindLayout parent, View child, int direction);
+    }
+
+    public void setScrollCallback(OnChildScrollCallback scrollCallback) {
+        mScrollCallback = scrollCallback;
     }
 
     public SlidingBehindLayout(Context context) {
@@ -366,6 +388,9 @@ public class SlidingBehindLayout extends ViewGroup {
         // 如果没有Touch到当前的View上面
         if (!isTouchedView(ev, view)) {
             return false;
+        }
+        if (mScrollCallback != null) {
+            return mScrollCallback.canScrollVertically(this, view, offSet);
         }
         // 关于这个方法的解释，官方的其实不靠谱
         return canViewScrollVertically(view, offSet);
