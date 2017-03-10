@@ -157,6 +157,7 @@ public class DragDetailLayout extends ViewGroup {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                super.onInterceptTouchEvent(ev);
                 resetDownPosition(ev);
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -192,16 +193,15 @@ public class DragDetailLayout extends ViewGroup {
                     }
                 } else if (mCurrentIndex == DragDetailLayoutPageState.TOP) {
                     //顶部处理上拉
-                    if (distance < 0 && mTopView.getScrollY() < 0) {
+                    if (mTopView.getScrollY() == 0 && distance < 0 && mTopView.getTranslationY() < 0) {
                         mTopView.dispatchTouchEvent(ev);
                         return false;
                     }
-                    // 底部处理下拉
+                    // 底部处理下拉，这个时候由于滑动到了底部
                     if (distance > 0 && mTopView.getScrollY() > mTopView.getHeight() / 2) {
                         mTopView.dispatchTouchEvent(ev);
                         return false;
                     }
-
                 }
                 scrolltoPosition(ev);
                 break;
