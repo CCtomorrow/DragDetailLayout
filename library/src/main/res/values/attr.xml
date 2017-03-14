@@ -7,4 +7,32 @@
             <enum name="behind" value="1"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="FitAvoidView">
+        <attr name="android:src"/>
+        <attr name="android:text"/>
+        <attr name="android:textSize"/>
+        <attr name="android:textColor"/>
+        <attr name="pictextPadding" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="PicsurroundView">
+        <attr name="android:drawableLeft"/>
+        <attr name="android:drawableTop"/>
+        <attr name="android:drawableRight"/>
+        <attr name="android:drawableBottom"/>
+
+        <attr name="android:drawablePadding"/>
+        <attr name="textPadding" format="dimension"/>
+
+        <attr name="topTextColor" format="color"/>
+        <attr name="topTextSize" format="dimension"/>
+        <attr name="topTextBold" format="boolean"/>
+        <attr name="topText" format="string"/>
+
+        <attr name="bottomTextColor" format="color"/>
+        <attr name="bottomTextSize" format="dimension"/>
+        <attr name="bottomTextBold" format="boolean"/>
+        <attr name="bottomText" format="string"/>
+    </declare-styleable>
 </resources>

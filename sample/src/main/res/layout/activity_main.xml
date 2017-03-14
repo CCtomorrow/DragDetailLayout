@@ -28,5 +28,12 @@
         android:text="两个可以上下拖动的Layout"
         android:textAllCaps="false"/>
 
+    <Button
+        android:id="@+id/yiji"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="宜忌View"
+        android:textAllCaps="false"/>
+
 
 </LinearLayout>
