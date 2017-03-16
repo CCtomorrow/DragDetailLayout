@@ -8,12 +8,16 @@
         </attr>
     </declare-styleable>
 
+    <attr name="pictextPadding" format="dimension"/>
+    <attr name="twotextPadding" format="dimension"/>
+    <attr name="drawableMiddle" format="reference|color"/>
+
     <declare-styleable name="FitAvoidView">
         <attr name="android:src"/>
         <attr name="android:text"/>
         <attr name="android:textSize"/>
         <attr name="android:textColor"/>
-        <attr name="pictextPadding" format="dimension"/>
+        <attr name="pictextPadding"/>
     </declare-styleable>
 
     <declare-styleable name="PicsurroundView">
@@ -23,7 +27,7 @@
         <attr name="android:drawableBottom"/>
 
         <attr name="android:drawablePadding"/>
-        <attr name="textPadding" format="dimension"/>
+        <attr name="twotextPadding"/>
 
         <attr name="topTextColor" format="color"/>
         <attr name="topTextSize" format="dimension"/>
@@ -34,5 +38,17 @@
         <attr name="bottomTextSize" format="dimension"/>
         <attr name="bottomTextBold" format="boolean"/>
         <attr name="bottomText" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="ZodiacsAfoulView">
+        <attr name="android:drawableLeft"/>
+        <attr name="drawableMiddle"/>
+        <attr name="android:drawableRight"/>
+        <attr name="android:drawablePadding"/>
+        <attr name="textBold" format="boolean"/>
+        <attr name="android:text"/>
+        <attr name="android:textSize"/>
+        <attr name="android:textColor"/>
+        <attr name="pictextPadding"/>
     </declare-styleable>
 </resources>

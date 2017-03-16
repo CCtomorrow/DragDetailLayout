@@ -38,4 +38,17 @@
         app:topTextBold="true"
         app:topTextSize="20sp"/>
 
+    <com.ai.dragdetaillayout.ZodiacsAfoulView
+        android:id="@+id/zodiacsAfoulView"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:drawableLeft="@drawable/gift"
+        android:drawableRight="@drawable/gift"
+        android:text="你好"
+        android:textColor="#DF12"
+        android:textSize="16sp"
+        app:drawableMiddle="@mipmap/ic_launcher"/>
+
 </LinearLayout>

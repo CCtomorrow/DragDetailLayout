@@ -62,7 +62,7 @@ public class PicsurroundView extends View {
         mDrawableRight = a.getDrawable(R.styleable.PicsurroundView_android_drawableRight);
         mDrawableBottom = a.getDrawable(R.styleable.PicsurroundView_android_drawableBottom);
 
-        mTextPadding = a.getDimensionPixelSize(R.styleable.PicsurroundView_textPadding, 0);
+        mTextPadding = a.getDimensionPixelSize(R.styleable.PicsurroundView_twotextPadding, 0);
         mDrawablePadding = a.getDimensionPixelSize(R.styleable.PicsurroundView_android_drawablePadding, 0);
 
         mTopTextColor = a.getColor(R.styleable.PicsurroundView_topTextColor, Color.BLACK);
