@@ -368,6 +368,8 @@ public class ZodiacsAfoulView extends View {
         Rect allDrawableRect = getAllDrawableRect();
         int textX = getWidth() / 2;
         int textY = (int) (allDrawableRect.bottom + mPictextPadding - mTextPaint.ascent());
+        mTextPaint.setColor(mCurrentColor);
+        mTextPaint.drawableState = getDrawableState();
         canvas.drawText(mText, textX, textY, mTextPaint);
         Rect middle = getMiddleRect(allDrawableRect);
         mDrawableMiddle.setBounds(middle);
