@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -17,7 +18,7 @@ import android.view.View;
  * <b>Create Date:</b> 2017/3/16 <br>
  * <b>Author:</b> qy <br>
  * <b>Address:</b> qingyongai@gmail.com <br>
- * <b>Description:</b> 生肖相冲View <br>
+ * <b>Description:</b> 生肖相冲View，上面三张图片，下面是一行文字 <br>
  */
 public class ZodiacsAfoulView extends View {
 
@@ -35,6 +36,23 @@ public class ZodiacsAfoulView extends View {
     private boolean mTextBold;
 
     private TextPaint mTextPaint;
+
+    private static int DEF_COLOR = Color.parseColor("#ECDED0");
+
+    private int mLeftBorderLineWidth;
+    private int mLeftBorderLineColor;
+    private int mTopBorderLineWidth;
+    private int mTopBorderLineColor;
+    private int mRightBorderLineWidth;
+    private int mRightBorderLineColor;
+    private int mBottomBorderLineWidth;
+    private int mBottomBorderLineColor;
+
+    private Paint
+            mLeftLinePaint = null,
+            mTopLinePaint = null,
+            mRightLinePaint = null,
+            mBottomLinePaint = null;
 
     public ZodiacsAfoulView(Context context) {
         this(context, null);
@@ -56,6 +74,19 @@ public class ZodiacsAfoulView extends View {
         mTextColor = a.getColorStateList(R.styleable.ZodiacsAfoulView_android_textColor);
         mPictextPadding = a.getDimensionPixelSize(R.styleable.ZodiacsAfoulView_pictextPadding, 0);
         mTextBold = a.getBoolean(R.styleable.ZodiacsAfoulView_textBold, false);
+
+        int borderLineWidth = a.getDimensionPixelSize(R.styleable.ZodiacsAfoulView_borderLineWidth, 0);
+        int borderLineColor = a.getColor(R.styleable.ZodiacsAfoulView_borderLineColor, DEF_COLOR);
+
+        mLeftBorderLineWidth = a.getDimensionPixelSize(R.styleable.ZodiacsAfoulView_leftBorderLineWidth, borderLineWidth);
+        mLeftBorderLineColor = a.getColor(R.styleable.ZodiacsAfoulView_leftBorderLineColor, borderLineColor);
+        mTopBorderLineWidth = a.getDimensionPixelSize(R.styleable.ZodiacsAfoulView_topBorderLineWidth, borderLineWidth);
+        mTopBorderLineColor = a.getColor(R.styleable.ZodiacsAfoulView_topBorderLineColor, borderLineColor);
+        mRightBorderLineWidth = a.getDimensionPixelSize(R.styleable.ZodiacsAfoulView_rightBorderLineWidth, borderLineWidth);
+        mRightBorderLineColor = a.getColor(R.styleable.ZodiacsAfoulView_rightBorderLineColor, borderLineColor);
+        mBottomBorderLineWidth = a.getDimensionPixelSize(R.styleable.ZodiacsAfoulView_bottomBorderLineWidth, borderLineWidth);
+        mBottomBorderLineColor = a.getColor(R.styleable.ZodiacsAfoulView_bottomBorderLineColor, borderLineColor);
+
         a.recycle();
         initPaint();
     }
@@ -76,6 +107,34 @@ public class ZodiacsAfoulView extends View {
             mCurrentColor = color;
         }
         // mTextPaint.setTypeface(Typeface.DEFAULT_BOLD); // 粗体
+        initLinePaint();
+    }
+
+    private void initLinePaint() {
+        if (mLeftBorderLineWidth > 0) {
+            mLeftLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mLeftLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mLeftLinePaint.setColor(mLeftBorderLineColor);
+            mLeftLinePaint.setStrokeWidth(mLeftBorderLineWidth);
+        }
+        if (mTopBorderLineWidth > 0) {
+            mTopLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mTopLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mTopLinePaint.setColor(mTopBorderLineColor);
+            mTopLinePaint.setStrokeWidth(mTopBorderLineWidth);
+        }
+        if (mRightBorderLineWidth > 0) {
+            mRightLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mRightLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mRightLinePaint.setColor(mRightBorderLineColor);
+            mRightLinePaint.setStrokeWidth(mRightBorderLineWidth);
+        }
+        if (mBottomBorderLineWidth > 0) {
+            mBottomLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mBottomLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mBottomLinePaint.setColor(mBottomBorderLineColor);
+            mBottomLinePaint.setStrokeWidth(mBottomBorderLineWidth);
+        }
     }
 
     /**
@@ -85,6 +144,68 @@ public class ZodiacsAfoulView extends View {
      */
     public void setText(String text) {
         mText = text;
+        re();
+    }
+
+    /**
+     * 设置字符串
+     *
+     * @param res 需要设置的字符串资源文件
+     */
+    public void setText(int res) {
+        mText = getContext().getString(res);
+        re();
+    }
+
+    /**
+     * 设置左边的图片
+     */
+    public void setDrawableLeft(Drawable drawableLeft) {
+        mDrawableLeft = drawableLeft;
+        re();
+    }
+
+    /**
+     * 设置左边的图片
+     */
+    public void setDrawableLeft(int res) {
+        mDrawableLeft = ViewUtil.getDrawable(getContext(), res);
+        re();
+    }
+
+    /**
+     * 设置中间的图片
+     */
+    public void setDrawableMiddle(Drawable drawableMiddle) {
+        mDrawableMiddle = drawableMiddle;
+        re();
+    }
+
+    /**
+     * 设置中间的图片
+     */
+    public void setDrawableMiddle(int res) {
+        mDrawableMiddle = ViewUtil.getDrawable(getContext(), res);
+        re();
+    }
+
+    /**
+     * 设置右边的图片
+     */
+    public void setDrawableRight(Drawable drawableRight) {
+        mDrawableRight = drawableRight;
+        re();
+    }
+
+    /**
+     * 设置右边的图片
+     */
+    public void setDrawableRight(int res) {
+        mDrawableRight = ViewUtil.getDrawable(getContext(), res);
+        re();
+    }
+
+    private void re() {
         requestLayout();
         invalidate();
     }
@@ -255,6 +376,29 @@ public class ZodiacsAfoulView extends View {
         mDrawableLeft.draw(canvas);
         mDrawableRight.setBounds(getRightRect(middle));
         mDrawableRight.draw(canvas);
+        drawLine(canvas);
+    }
+
+    /**
+     * 画线
+     */
+    private void drawLine(Canvas canvas) {
+        if (mLeftBorderLineWidth > 0) {
+            canvas.drawRect(new Rect(0, 0, mLeftBorderLineWidth, canvas.getHeight()),
+                    mLeftLinePaint);
+        }
+        if (mTopBorderLineWidth > 0) {
+            canvas.drawRect(new Rect(0, 0, canvas.getWidth(), mTopBorderLineWidth),
+                    mTopLinePaint);
+        }
+        if (mRightBorderLineWidth > 0) {
+            canvas.drawRect(new Rect(canvas.getWidth() - mRightBorderLineWidth, 0, canvas.getWidth(), canvas.getHeight()),
+                    mRightLinePaint);
+        }
+        if (mBottomBorderLineWidth > 0) {
+            canvas.drawRect(new Rect(0, canvas.getHeight() - mBottomBorderLineWidth, canvas.getWidth(), canvas.getHeight()),
+                    mBottomLinePaint);
+        }
     }
 
 }

@@ -8,9 +8,32 @@
         </attr>
     </declare-styleable>
 
+    <attr name="textBold" format="boolean"/>
     <attr name="pictextPadding" format="dimension"/>
     <attr name="twotextPadding" format="dimension"/>
     <attr name="drawableMiddle" format="reference|color"/>
+
+    <attr name="topTextColor" format="color"/>
+    <attr name="topTextSize" format="dimension"/>
+    <attr name="topTextBold" format="boolean"/>
+    <attr name="topText" format="string"/>
+
+    <attr name="bottomTextColor" format="color"/>
+    <attr name="bottomTextSize" format="dimension"/>
+    <attr name="bottomTextBold" format="boolean"/>
+    <attr name="bottomText" format="string"/>
+
+    <attr name="borderLineWidth" format="dimension"/>
+    <attr name="borderLineColor" format="color"/>
+
+    <attr name="leftBorderLineWidth" format="dimension"/>
+    <attr name="leftBorderLineColor" format="color"/>
+    <attr name="topBorderLineWidth" format="dimension"/>
+    <attr name="topBorderLineColor" format="color"/>
+    <attr name="rightBorderLineWidth" format="dimension"/>
+    <attr name="rightBorderLineColor" format="color"/>
+    <attr name="bottomBorderLineWidth" format="dimension"/>
+    <attr name="bottomBorderLineColor" format="color"/>
 
     <declare-styleable name="FitAvoidView">
         <attr name="android:src"/>
@@ -18,6 +41,72 @@
         <attr name="android:textSize"/>
         <attr name="android:textColor"/>
         <attr name="pictextPadding"/>
+
+        <attr name="borderLineWidth"/>
+        <attr name="borderLineColor"/>
+
+        <attr name="leftBorderLineWidth"/>
+        <attr name="leftBorderLineColor"/>
+        <attr name="topBorderLineWidth"/>
+        <attr name="topBorderLineColor"/>
+        <attr name="rightBorderLineWidth"/>
+        <attr name="rightBorderLineColor"/>
+        <attr name="bottomBorderLineWidth"/>
+        <attr name="bottomBorderLineColor"/>
+    </declare-styleable>
+
+    <declare-styleable name="ZodiacsAfoulView">
+        <attr name="android:drawableLeft"/>
+        <attr name="drawableMiddle"/>
+        <attr name="android:drawableRight"/>
+        <attr name="android:drawablePadding"/>
+        <attr name="textBold"/>
+        <attr name="android:text"/>
+        <attr name="android:textSize"/>
+        <attr name="android:textColor"/>
+        <attr name="pictextPadding"/>
+
+        <attr name="borderLineWidth"/>
+        <attr name="borderLineColor"/>
+
+        <attr name="leftBorderLineWidth"/>
+        <attr name="leftBorderLineColor"/>
+        <attr name="topBorderLineWidth"/>
+        <attr name="topBorderLineColor"/>
+        <attr name="rightBorderLineWidth"/>
+        <attr name="rightBorderLineColor"/>
+        <attr name="bottomBorderLineWidth"/>
+        <attr name="bottomBorderLineColor"/>
+    </declare-styleable>
+
+    <declare-styleable name="LiteWeekView">
+        <attr name="android:src"/>
+        <!--drawable和左边文字的间距-->
+        <attr name="android:drawablePadding"/>
+        <!--两行文字之间的距离-->
+        <attr name="twotextPadding"/>
+
+        <attr name="topTextColor"/>
+        <attr name="topTextSize"/>
+        <attr name="topTextBold"/>
+        <attr name="topText"/>
+
+        <attr name="bottomTextColor"/>
+        <attr name="bottomTextSize"/>
+        <attr name="bottomTextBold"/>
+        <attr name="bottomText"/>
+
+        <attr name="borderLineWidth"/>
+        <attr name="borderLineColor"/>
+
+        <attr name="leftBorderLineWidth"/>
+        <attr name="leftBorderLineColor"/>
+        <attr name="topBorderLineWidth"/>
+        <attr name="topBorderLineColor"/>
+        <attr name="rightBorderLineWidth"/>
+        <attr name="rightBorderLineColor"/>
+        <attr name="bottomBorderLineWidth"/>
+        <attr name="bottomBorderLineColor"/>
     </declare-styleable>
 
     <declare-styleable name="PicsurroundView">
@@ -29,26 +118,27 @@
         <attr name="android:drawablePadding"/>
         <attr name="twotextPadding"/>
 
-        <attr name="topTextColor" format="color"/>
-        <attr name="topTextSize" format="dimension"/>
-        <attr name="topTextBold" format="boolean"/>
-        <attr name="topText" format="string"/>
+        <attr name="topTextColor"/>
+        <attr name="topTextSize"/>
+        <attr name="topTextBold"/>
+        <attr name="topText"/>
 
-        <attr name="bottomTextColor" format="color"/>
-        <attr name="bottomTextSize" format="dimension"/>
-        <attr name="bottomTextBold" format="boolean"/>
-        <attr name="bottomText" format="string"/>
+        <attr name="bottomTextColor"/>
+        <attr name="bottomTextSize"/>
+        <attr name="bottomTextBold"/>
+        <attr name="bottomText"/>
+
+        <attr name="borderLineWidth"/>
+        <attr name="borderLineColor"/>
+
+        <attr name="leftBorderLineWidth"/>
+        <attr name="leftBorderLineColor"/>
+        <attr name="topBorderLineWidth"/>
+        <attr name="topBorderLineColor"/>
+        <attr name="rightBorderLineWidth"/>
+        <attr name="rightBorderLineColor"/>
+        <attr name="bottomBorderLineWidth"/>
+        <attr name="bottomBorderLineColor"/>
     </declare-styleable>
 
-    <declare-styleable name="ZodiacsAfoulView">
-        <attr name="android:drawableLeft"/>
-        <attr name="drawableMiddle"/>
-        <attr name="android:drawableRight"/>
-        <attr name="android:drawablePadding"/>
-        <attr name="textBold" format="boolean"/>
-        <attr name="android:text"/>
-        <attr name="android:textSize"/>
-        <attr name="android:textColor"/>
-        <attr name="pictextPadding"/>
-    </declare-styleable>
 </resources>

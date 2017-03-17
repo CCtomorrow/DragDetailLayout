@@ -17,12 +17,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/colorAccent"
+        android:background="@android:color/white"
+        android:padding="5dp"
         android:src="@drawable/gift"
         android:text="测试"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"/>
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:borderLineWidth="2dp"
+        app:bottomBorderLineColor="@color/colorAccent"
+        app:leftBorderLineColor="@color/colorPrimary"
+        app:rightBorderLineColor="@color/colorAccent"
+        app:topBorderLineColor="@color/colorPrimary"/>
 
+    <!--android:drawableTop="@drawable/gift"-->
+    <!--android:drawableBottom="@drawable/gift"-->
     <com.ai.dragdetaillayout.PicsurroundView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,12 +38,15 @@
         android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
         android:drawableLeft="@drawable/gift"
+        android:drawablePadding="10dp"
         android:drawableRight="@drawable/gift"
         android:padding="5dp"
         app:bottomText="是不是"
+        app:bottomTextColor="@android:color/white"
         app:bottomTextSize="20sp"
         app:topText="你好"
         app:topTextBold="true"
+        app:topTextColor="@android:color/white"
         app:topTextSize="20sp"/>
 
     <com.ai.dragdetaillayout.ZodiacsAfoulView
@@ -44,11 +55,30 @@
         android:layout_height="100dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
+        android:background="@color/colorAccent"
         android:drawableLeft="@drawable/gift"
         android:drawableRight="@drawable/gift"
         android:text="你好"
-        android:textColor="#DF12"
+        android:textColor="@android:color/white"
         android:textSize="16sp"
         app:drawableMiddle="@mipmap/ic_launcher"/>
+
+    <com.ai.dragdetaillayout.LiteWeekView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:background="@color/colorPrimary"
+        android:drawablePadding="20dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:src="@mipmap/ic_launcher"
+        app:bottomText="星期五"
+        app:bottomTextBold="true"
+        app:bottomTextColor="@color/colorAccent"
+        app:bottomTextSize="16sp"
+        app:topText="Fri"
+        app:topTextColor="@color/colorAccent"
+        app:topTextSize="14sp"/>
 
 </LinearLayout>

@@ -46,6 +46,23 @@ public class PicsurroundView extends View {
     private int mTextPadding;
     private int mDrawablePadding;
 
+    private static int DEF_COLOR = Color.parseColor("#ECDED0");
+
+    private int mLeftBorderLineWidth;
+    private int mLeftBorderLineColor;
+    private int mTopBorderLineWidth;
+    private int mTopBorderLineColor;
+    private int mRightBorderLineWidth;
+    private int mRightBorderLineColor;
+    private int mBottomBorderLineWidth;
+    private int mBottomBorderLineColor;
+
+    private Paint
+            mLeftLinePaint = null,
+            mTopLinePaint = null,
+            mRightLinePaint = null,
+            mBottomLinePaint = null;
+
     public PicsurroundView(Context context) {
         this(context, null);
     }
@@ -75,6 +92,18 @@ public class PicsurroundView extends View {
         mBottomTextBold = a.getBoolean(R.styleable.PicsurroundView_bottomTextBold, false);
         mBottomText = (String) a.getText(R.styleable.PicsurroundView_bottomText);
 
+        int borderLineWidth = a.getDimensionPixelSize(R.styleable.PicsurroundView_borderLineWidth, 0);
+        int borderLineColor = a.getColor(R.styleable.PicsurroundView_borderLineColor, DEF_COLOR);
+
+        mLeftBorderLineWidth = a.getDimensionPixelSize(R.styleable.PicsurroundView_leftBorderLineWidth, borderLineWidth);
+        mLeftBorderLineColor = a.getColor(R.styleable.PicsurroundView_leftBorderLineColor, borderLineColor);
+        mTopBorderLineWidth = a.getDimensionPixelSize(R.styleable.PicsurroundView_topBorderLineWidth, borderLineWidth);
+        mTopBorderLineColor = a.getColor(R.styleable.PicsurroundView_topBorderLineColor, borderLineColor);
+        mRightBorderLineWidth = a.getDimensionPixelSize(R.styleable.PicsurroundView_rightBorderLineWidth, borderLineWidth);
+        mRightBorderLineColor = a.getColor(R.styleable.PicsurroundView_rightBorderLineColor, borderLineColor);
+        mBottomBorderLineWidth = a.getDimensionPixelSize(R.styleable.PicsurroundView_bottomBorderLineWidth, borderLineWidth);
+        mBottomBorderLineColor = a.getColor(R.styleable.PicsurroundView_bottomBorderLineColor, borderLineColor);
+
         if (TextUtils.isEmpty(mTopText)) mTopText = "";
         if (TextUtils.isEmpty(mBottomText)) mBottomText = "";
 
@@ -94,19 +123,100 @@ public class PicsurroundView extends View {
         mBottomTextPaint.setTextSize(mBottomTextSize);
         mBottomTextPaint.setTextAlign(Paint.Align.LEFT);
         mBottomTextPaint.setTypeface(mBottomTextBold ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
+
+        initLinePaint();
+    }
+
+    private void initLinePaint() {
+        if (mLeftBorderLineWidth > 0) {
+            mLeftLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mLeftLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mLeftLinePaint.setColor(mLeftBorderLineColor);
+            mLeftLinePaint.setStrokeWidth(mLeftBorderLineWidth);
+        }
+        if (mTopBorderLineWidth > 0) {
+            mTopLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mTopLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mTopLinePaint.setColor(mTopBorderLineColor);
+            mTopLinePaint.setStrokeWidth(mTopBorderLineWidth);
+        }
+        if (mRightBorderLineWidth > 0) {
+            mRightLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mRightLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mRightLinePaint.setColor(mRightBorderLineColor);
+            mRightLinePaint.setStrokeWidth(mRightBorderLineWidth);
+        }
+        if (mBottomBorderLineWidth > 0) {
+            mBottomLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mBottomLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mBottomLinePaint.setColor(mBottomBorderLineColor);
+            mBottomLinePaint.setStrokeWidth(mBottomBorderLineWidth);
+        }
     }
 
     public void setTopText(String topText) {
         mTopText = topText;
-        requestLayout();
-        invalidate();
+        re();
+    }
+
+    public void setTopText(int res) {
+        mTopText = getContext().getString(res);
+        re();
     }
 
     public void setBottomText(String bottomText) {
         mBottomText = bottomText;
+        re();
+    }
+
+    public void setBottomText(int res) {
+        mBottomText = getContext().getString(res);
+        re();
+    }
+
+    public void setDrawableLeft(Drawable drawableLeft) {
+        mDrawableLeft = drawableLeft;
+        re();
+    }
+
+    public void setDrawableLeft(int res) {
+        mDrawableLeft = ViewUtil.getDrawable(getContext(), res);
+        re();
+    }
+
+    public void setDrawableTop(Drawable drawableTop) {
+        mDrawableTop = drawableTop;
+        re();
+    }
+
+    public void setDrawableTop(int res) {
+        mDrawableTop = ViewUtil.getDrawable(getContext(), res);
+        re();
+    }
+
+    public void setDrawableRight(Drawable drawableRight) {
+        mDrawableRight = drawableRight;
+        re();
+    }
+
+    public void setDrawableRight(int res) {
+        mDrawableRight = ViewUtil.getDrawable(getContext(), res);
+        re();
+    }
+
+    public void setDrawableBottom(Drawable drawableBottom) {
+        mDrawableBottom = drawableBottom;
+        re();
+    }
+
+    public void setDrawableBottom(int res) {
+        mDrawableBottom = ViewUtil.getDrawable(getContext(), res);
+        re();
+    }
+
+    private void re() {
         requestLayout();
         invalidate();
-
     }
 
     @Override
@@ -130,11 +240,7 @@ public class PicsurroundView extends View {
             result = size;
         } else {
             int padding = getPaddingLeft() + getPaddingRight();
-            float topTextWidth = mTopTextPaint.measureText(mTopText);
-            float bottomTextWidth = mBottomTextPaint.measureText(mBottomText);
-            int leftdrawableWidth = mDrawableLeft != null ? mDrawableLeft.getIntrinsicWidth() + mDrawablePadding : 0;
-            int rightdrawableWidth = mDrawableRight != null ? mDrawableRight.getIntrinsicWidth() + mDrawablePadding : 0;
-            result = (int) (padding + Math.max(topTextWidth, bottomTextWidth) + leftdrawableWidth + rightdrawableWidth);
+            result = padding + getMiddleWidth() + getDrawableWidth(0) + getDrawableWidth(2);
             if (mode == MeasureSpec.AT_MOST) {
                 result = Math.min(result, size);
             }
@@ -156,20 +262,31 @@ public class PicsurroundView extends View {
             result = size;
         } else {
             int padding = getPaddingTop() + getPaddingBottom();
-            float topTextHeight = mTopTextPaint.descent() - mTopTextPaint.ascent();
-            float bottomTextHeight = mBottomTextPaint.descent() - mBottomTextPaint.ascent();
-            int topdrawableHeight = mDrawableTop != null ? mDrawableTop.getIntrinsicHeight() + mDrawablePadding : 0;
-            int bottomdrawableHeight = mDrawableBottom != null ? mDrawableBottom.getIntrinsicHeight() + mDrawablePadding : 0;
-            result = (int) (padding + topdrawableHeight + topTextHeight + mTextPadding + bottomTextHeight + bottomdrawableHeight);
-            int leftDrawableHeight = mDrawableLeft != null ? mDrawableLeft.getIntrinsicHeight() : 0;
-            int rightDrawableHeight = mDrawableRight != null ? mDrawableRight.getIntrinsicHeight() : 0;
-            int drawableHeight = Math.max(leftDrawableHeight, rightDrawableHeight);
-            result = Math.max(result, drawableHeight);
+            result = padding + getMiddleHeight() + getDrawableHeight(1) + getDrawableHeight(3);
             if (mode == MeasureSpec.AT_MOST) {
                 result = Math.min(result, size);
             }
         }
         return result;
+    }
+
+    /**
+     * 返回中间的宽度
+     */
+    private int getMiddleWidth() {
+        int textWidth = (int) Math.max(getTopTextWidth(), getBottomTextWidth());
+        int drawableWidth = Math.max(getDrawableWidth(1), getDrawableWidth(3));
+        int middleWidth = Math.max(textWidth, drawableWidth);
+        return middleWidth;
+    }
+
+    /**
+     * 返回中间的高度
+     */
+    private int getMiddleHeight() {
+        int textHeight = (int) (getTopTextHeight() + mTextPadding + getBottomTextHeight());
+        int middleHeight = Math.max(Math.max(textHeight, getDrawableHeight(0)), getDrawableHeight(2));
+        return middleHeight;
     }
 
     /**
@@ -213,14 +330,60 @@ public class PicsurroundView extends View {
     }
 
     /**
+     * 获取drawable的宽度
+     *
+     * @param direction left:0 top:1 right:2 bottom:3
+     * @return
+     */
+    private int getDrawableWidth(int direction) {
+        switch (direction) {
+            case 0:
+                int leftdrawableWidth = mDrawableLeft != null ? mDrawableLeft.getIntrinsicWidth() + mDrawablePadding : 0;
+                return leftdrawableWidth;
+            case 1:
+                int topdrawableWidth = mDrawableTop != null ? mDrawableTop.getIntrinsicWidth() : 0;
+                return topdrawableWidth;
+            case 2:
+                int rightdrawableWidth = mDrawableRight != null ? mDrawableRight.getIntrinsicWidth() + mDrawablePadding : 0;
+                return rightdrawableWidth;
+            case 3:
+                int bottomdrawableWidth = mDrawableBottom != null ? mDrawableBottom.getIntrinsicWidth() : 0;
+                return bottomdrawableWidth;
+        }
+        return 0;
+    }
+
+    /**
+     * 获取drawable的高度
+     *
+     * @param direction left:0 top:1 right:2 bottom:3
+     * @return
+     */
+    private int getDrawableHeight(int direction) {
+        switch (direction) {
+            case 0:
+                int leftdrawableHeight = mDrawableLeft != null ? mDrawableLeft.getIntrinsicHeight() : 0;
+                return leftdrawableHeight;
+            case 1:
+                int topdrawableHeight = mDrawableTop != null ? mDrawableTop.getIntrinsicHeight() + mDrawablePadding : 0;
+                return topdrawableHeight;
+            case 2:
+                int rightdrawableHeight = mDrawableRight != null ? mDrawableRight.getIntrinsicHeight() : 0;
+                return rightdrawableHeight;
+            case 3:
+                int bottomdrawableHeight = mDrawableBottom != null ? mDrawableBottom.getIntrinsicHeight() + mDrawablePadding : 0;
+                return bottomdrawableHeight;
+        }
+        return 0;
+    }
+
+    /**
      * 最左边的开始的x坐标
      *
      * @return x坐标
      */
     private int getLeftStart() {
-        int leftdrawableWidth = mDrawableLeft != null ? mDrawableLeft.getIntrinsicWidth() + mDrawablePadding : 0;
-        int rightdrawableWidth = mDrawableRight != null ? mDrawableRight.getIntrinsicWidth() + mDrawablePadding : 0;
-        int width = (int) (Math.max(getTopTextWidth(), getBottomTextWidth()) + leftdrawableWidth + rightdrawableWidth);
+        int width = getMiddleWidth() + getDrawableWidth(0) + getDrawableWidth(2);
         int left = getWidth() / 2 - width / 2;
         return left;
     }
@@ -231,9 +394,7 @@ public class PicsurroundView extends View {
      * @return y坐标
      */
     private int getTopStart() {
-        int topdrawableHeight = mDrawableTop != null ? mDrawableTop.getIntrinsicHeight() + mDrawablePadding : 0;
-        int bottomdrawableHeight = mDrawableBottom != null ? mDrawableBottom.getIntrinsicHeight() + mDrawablePadding : 0;
-        int height = (int) (topdrawableHeight + getTopTextHeight() + mTextPadding + getBottomTextHeight() + bottomdrawableHeight);
+        int height = getMiddleHeight() + getDrawableHeight(1) + getDrawableHeight(3);
         int top = getHeight() / 2 - height / 2;
         return top;
     }
@@ -243,11 +404,11 @@ public class PicsurroundView extends View {
      *
      * @return rect
      */
-    private Rect getLeftBrounds() {
+    private Rect getLeftBounds() {
         int left = getLeftStart();
-        int top = getHeight() / 2 - mDrawableLeft.getIntrinsicHeight() / 2;
+        int top = getHeight() / 2 - getDrawableHeight(0) / 2;
         int right = left + mDrawableLeft.getIntrinsicWidth();
-        int bottom = top + mDrawableLeft.getIntrinsicHeight();
+        int bottom = top + getDrawableHeight(0);
         return new Rect(left, top, right, bottom);
     }
 
@@ -256,53 +417,12 @@ public class PicsurroundView extends View {
      *
      * @return rect
      */
-    private Rect getTopBrounds() {
-        int left = getWidth() / 2 - mDrawableTop.getIntrinsicHeight() / 2;
+    private Rect getTopBounds() {
+        int left = getWidth() / 2 - getDrawableWidth(1) / 2;
         int top = getTopStart();
-        int right = left + mDrawableTop.getIntrinsicWidth();
+        int right = left + getDrawableWidth(1);
         int bottom = top + mDrawableTop.getIntrinsicHeight();
         return new Rect(left, top, right, bottom);
-    }
-
-    /**
-     * 第一行文字的位置
-     *
-     * @return x，y
-     */
-    private Point getTopTextPoint() {
-        int left = getLeftStart();
-        if (getTopTextWidth() < getBottomTextWidth()) {
-            left += (getBottomTextWidth() - getTopTextWidth()) / 2;
-        }
-        if (mDrawableLeft != null) {
-            left += mDrawableLeft.getIntrinsicWidth() + mDrawablePadding;
-        }
-        int top = getTopStart();
-        if (mDrawableTop != null) {
-            top += mDrawableTop.getIntrinsicHeight() + mDrawablePadding;
-        }
-        // 画文字从baseline开始的，需要把asent部分加上，ascent值为负，所以这里是减号
-        top -= mTopTextPaint.ascent();
-        return new Point(left, top);
-    }
-
-    /**
-     * 第二行文字的位置
-     *
-     * @return x，y
-     */
-    private Point getBottomTextPoint() {
-        float bottomTextHeight = mBottomTextPaint.descent() - mBottomTextPaint.ascent();
-        int left = getLeftStart();
-        if (getTopTextWidth() > getBottomTextWidth()) {
-            left += (getTopTextWidth() - getBottomTextWidth()) / 2;
-        }
-        if (mDrawableLeft != null) {
-            left += mDrawableLeft.getIntrinsicWidth() + mDrawablePadding;
-        }
-        int top = (int) (getTopTextPoint().y + bottomTextHeight + mTextPadding);
-        // int top = (int) (getTopTextPoint().y - mBottomTextPaint.ascent() + mTextPadding);
-        return new Point(left, top);
     }
 
     /**
@@ -310,13 +430,11 @@ public class PicsurroundView extends View {
      *
      * @return rect
      */
-    private Rect getRightBrounds() {
-        int topx = (int) (getTopTextPoint().x + getTopTextWidth() + mDrawablePadding);
-        int bottomx = (int) (getBottomTextPoint().x + getBottomTextWidth() + mDrawablePadding);
-        int left = Math.max(topx, bottomx);
-        int top = getHeight() / 2 - mDrawableRight.getIntrinsicHeight() / 2;
+    private Rect getRightBounds() {
+        int left = getLeftStart() + getDrawableWidth(0) + getMiddleWidth() + mDrawablePadding;
+        int top = getHeight() / 2 - getDrawableHeight(2) / 2;
         int right = left + mDrawableRight.getIntrinsicWidth();
-        int bottom = top + mDrawableRight.getIntrinsicHeight();
+        int bottom = top + getDrawableHeight(2);
         return new Rect(left, top, right, bottom);
     }
 
@@ -325,33 +443,94 @@ public class PicsurroundView extends View {
      *
      * @return rect
      */
-    private Rect getBottomBrounds() {
-        int left = getWidth() / 2 - mDrawableBottom.getIntrinsicHeight() / 2;
-        int top = getBottomTextPoint().y + mDrawablePadding;
-        int right = left + mDrawableBottom.getIntrinsicWidth();
+    private Rect getBottomBounds() {
+        int left = getWidth() / 2 - getDrawableWidth(3) / 2;
+        int top = getTopStart() + getDrawableHeight(1) + getMiddleHeight() + mDrawablePadding;
+        int right = left + getDrawableWidth(3);
         int bottom = top + mDrawableBottom.getIntrinsicHeight();
         return new Rect(left, top, right, bottom);
+    }
+
+    /**
+     * 两行文字的位置
+     *
+     * @return rect
+     */
+    private Rect getTextRect() {
+        int left = getLeftStart() + getDrawableWidth(0);
+        int top = getTopStart() + getDrawableHeight(1);
+        int right = left + getMiddleWidth();
+        int bottom = top + getMiddleHeight();
+        return new Rect(left, top, right, bottom);
+    }
+
+    /**
+     * 第一行文字的位置
+     *
+     * @return x，y
+     */
+    private Point getTopTextPoint(Rect rect) {
+        int x = (int) (rect.centerX() - getTopTextWidth() / 2);
+        int y = (int) (rect.centerY() - (getTopTextHeight() + getBottomTextHeight() + mTextPadding) / 2
+                - mTopTextPaint.ascent());
+        return new Point(x, y);
+    }
+
+    /**
+     * 第二行文字的位置
+     *
+     * @return x，y
+     */
+    private Point getBottomTextPoint(Rect rect) {
+        int x = (int) (rect.centerX() - getBottomTextWidth() / 2);
+        int y = (int) (rect.centerY() - (getTopTextHeight() + getBottomTextHeight() + mTextPadding) / 2
+                + getTopTextHeight() + mTextPadding - mBottomTextPaint.ascent());
+        return new Point(x, y);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         if (mDrawableLeft != null) {
-            mDrawableLeft.setBounds(getLeftBrounds());
+            mDrawableLeft.setBounds(getLeftBounds());
             mDrawableLeft.draw(canvas);
         }
         if (mDrawableTop != null) {
-            mDrawableTop.setBounds(getTopBrounds());
+            mDrawableTop.setBounds(getTopBounds());
             mDrawableTop.draw(canvas);
         }
-        canvas.drawText(mTopText, getTopTextPoint().x, getTopTextPoint().y, mTopTextPaint);
-        canvas.drawText(mBottomText, getBottomTextPoint().x, getBottomTextPoint().y, mBottomTextPaint);
         if (mDrawableRight != null) {
-            mDrawableRight.setBounds(getRightBrounds());
+            mDrawableRight.setBounds(getRightBounds());
             mDrawableRight.draw(canvas);
         }
         if (mDrawableBottom != null) {
-            mDrawableBottom.setBounds(getBottomBrounds());
+            mDrawableBottom.setBounds(getBottomBounds());
             mDrawableBottom.draw(canvas);
+        }
+        Rect rect = getTextRect();
+        canvas.drawText(mTopText, getTopTextPoint(rect).x, getTopTextPoint(rect).y, mTopTextPaint);
+        canvas.drawText(mBottomText, getBottomTextPoint(rect).x, getBottomTextPoint(rect).y, mBottomTextPaint);
+        drawLine(canvas);
+    }
+
+    /**
+     * 画线
+     */
+    private void drawLine(Canvas canvas) {
+        if (mLeftBorderLineWidth > 0) {
+            canvas.drawRect(new Rect(0, 0, mLeftBorderLineWidth, canvas.getHeight()),
+                    mLeftLinePaint);
+        }
+        if (mTopBorderLineWidth > 0) {
+            canvas.drawRect(new Rect(0, 0, canvas.getWidth(), mTopBorderLineWidth),
+                    mTopLinePaint);
+        }
+        if (mRightBorderLineWidth > 0) {
+            canvas.drawRect(new Rect(canvas.getWidth() - mRightBorderLineWidth, 0, canvas.getWidth(), canvas.getHeight()),
+                    mRightLinePaint);
+        }
+        if (mBottomBorderLineWidth > 0) {
+            canvas.drawRect(new Rect(0, canvas.getHeight() - mBottomBorderLineWidth, canvas.getWidth(), canvas.getHeight()),
+                    mBottomLinePaint);
         }
     }
 

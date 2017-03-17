@@ -4,10 +4,11 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -20,7 +21,7 @@ import android.view.View;
  * <b>Create Date:</b> 2017/3/12 <br>
  * <b>Author:</b> qy <br>
  * <b>Address:</b> qingyongai@gmail.com <br>
- * <b>Description:</b> 宜忌View <br>
+ * <b>Description:</b> 宜忌View，上面是宜忌的图片，下面是可换行的文字 <br>
  * {R.styleable.FitAvoidView_android_src 图片}
  * {R.styleable.FitAvoidView_android_text 文字，也可以调用代码设置}
  * {R.styleable.FitAvoidView_android_textColor 文字颜色}
@@ -29,7 +30,7 @@ import android.view.View;
  */
 public class FitAvoidView extends View {
 
-    private BitmapDrawable mDrawable = null;
+    private Drawable mDrawable = null;
     private ColorStateList mTextColor = null;
     private int mCurrentColor;
     private String mText = "";
@@ -38,6 +39,23 @@ public class FitAvoidView extends View {
 
     private TextPaint mTextPaint;
     private StaticLayout mStaticLayout;
+
+    private static int DEF_COLOR = Color.parseColor("#ECDED0");
+
+    private int mLeftBorderLineWidth;
+    private int mLeftBorderLineColor;
+    private int mTopBorderLineWidth;
+    private int mTopBorderLineColor;
+    private int mRightBorderLineWidth;
+    private int mRightBorderLineColor;
+    private int mBottomBorderLineWidth;
+    private int mBottomBorderLineColor;
+
+    private Paint
+            mLeftLinePaint = null,
+            mTopLinePaint = null,
+            mRightLinePaint = null,
+            mBottomLinePaint = null;
 
     public FitAvoidView(Context context) {
         this(context, null);
@@ -50,11 +68,24 @@ public class FitAvoidView extends View {
     public FitAvoidView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FitAvoidView);
-        mDrawable = (BitmapDrawable) a.getDrawable(R.styleable.FitAvoidView_android_src);
+        mDrawable = a.getDrawable(R.styleable.FitAvoidView_android_src);
         mTextSize = a.getDimensionPixelSize(R.styleable.FitAvoidView_android_textSize, 15);
         mTextColor = a.getColorStateList(R.styleable.FitAvoidView_android_textColor);
         mPictextPadding = a.getDimensionPixelSize(R.styleable.FitAvoidView_pictextPadding, 0);
         mText = (String) a.getText(R.styleable.FitAvoidView_android_text);
+
+        int borderLineWidth = a.getDimensionPixelSize(R.styleable.FitAvoidView_borderLineWidth, 0);
+        int borderLineColor = a.getColor(R.styleable.FitAvoidView_borderLineColor, DEF_COLOR);
+
+        mLeftBorderLineWidth = a.getDimensionPixelSize(R.styleable.FitAvoidView_leftBorderLineWidth, borderLineWidth);
+        mLeftBorderLineColor = a.getColor(R.styleable.FitAvoidView_leftBorderLineColor, borderLineColor);
+        mTopBorderLineWidth = a.getDimensionPixelSize(R.styleable.FitAvoidView_topBorderLineWidth, borderLineWidth);
+        mTopBorderLineColor = a.getColor(R.styleable.FitAvoidView_topBorderLineColor, borderLineColor);
+        mRightBorderLineWidth = a.getDimensionPixelSize(R.styleable.FitAvoidView_rightBorderLineWidth, borderLineWidth);
+        mRightBorderLineColor = a.getColor(R.styleable.FitAvoidView_rightBorderLineColor, borderLineColor);
+        mBottomBorderLineWidth = a.getDimensionPixelSize(R.styleable.FitAvoidView_bottomBorderLineWidth, borderLineWidth);
+        mBottomBorderLineColor = a.getColor(R.styleable.FitAvoidView_bottomBorderLineColor, borderLineColor);
+
         if (TextUtils.isEmpty(mText)) mText = "";
         a.recycle();
         initPaint();
@@ -73,6 +104,34 @@ public class FitAvoidView extends View {
             mCurrentColor = color;
         }
         // mTextPaint.setTypeface(Typeface.DEFAULT_BOLD); // 粗体
+        initLinePaint();
+    }
+
+    private void initLinePaint() {
+        if (mLeftBorderLineWidth > 0) {
+            mLeftLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mLeftLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mLeftLinePaint.setColor(mLeftBorderLineColor);
+            mLeftLinePaint.setStrokeWidth(mLeftBorderLineWidth);
+        }
+        if (mTopBorderLineWidth > 0) {
+            mTopLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mTopLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mTopLinePaint.setColor(mTopBorderLineColor);
+            mTopLinePaint.setStrokeWidth(mTopBorderLineWidth);
+        }
+        if (mRightBorderLineWidth > 0) {
+            mRightLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mRightLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mRightLinePaint.setColor(mRightBorderLineColor);
+            mRightLinePaint.setStrokeWidth(mRightBorderLineWidth);
+        }
+        if (mBottomBorderLineWidth > 0) {
+            mBottomLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mBottomLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mBottomLinePaint.setColor(mBottomBorderLineColor);
+            mBottomLinePaint.setStrokeWidth(mBottomBorderLineWidth);
+        }
     }
 
     /**
@@ -82,6 +141,40 @@ public class FitAvoidView extends View {
      */
     public void setText(String string) {
         mText = string;
+        re();
+    }
+
+    /**
+     * 设置字符串
+     *
+     * @param res 需要设置的字符串资源文件
+     */
+    public void setText(int res) {
+        mText = getContext().getString(res);
+        re();
+    }
+
+    /**
+     * 设置drawable
+     *
+     * @param drawable 需要设置的图片
+     */
+    public void setDrawable(Drawable drawable) {
+        mDrawable = drawable;
+        re();
+    }
+
+    /**
+     * 设置drawable
+     *
+     * @param res 需要设置的图片资源，必须是图片，不然后面的计算宽高就会出问题
+     */
+    public void setDrawable(int res) {
+        mDrawable = ViewUtil.getDrawable(getContext(), res);
+        re();
+    }
+
+    private void re() {
         requestLayout();
         invalidate();
     }
@@ -225,6 +318,30 @@ public class FitAvoidView extends View {
             mTextPaint.drawableState = getDrawableState();
             mStaticLayout.draw(canvas);
             canvas.restore();
+            drawLine(canvas);
         }
     }
+
+    /**
+     * 画线
+     */
+    private void drawLine(Canvas canvas) {
+        if (mLeftBorderLineWidth > 0) {
+            canvas.drawRect(new Rect(0, 0, mLeftBorderLineWidth, canvas.getHeight()),
+                    mLeftLinePaint);
+        }
+        if (mTopBorderLineWidth > 0) {
+            canvas.drawRect(new Rect(0, 0, canvas.getWidth(), mTopBorderLineWidth),
+                    mTopLinePaint);
+        }
+        if (mRightBorderLineWidth > 0) {
+            canvas.drawRect(new Rect(canvas.getWidth() - mRightBorderLineWidth, 0, canvas.getWidth(), canvas.getHeight()),
+                    mRightLinePaint);
+        }
+        if (mBottomBorderLineWidth > 0) {
+            canvas.drawRect(new Rect(0, canvas.getHeight() - mBottomBorderLineWidth, canvas.getWidth(), canvas.getHeight()),
+                    mBottomLinePaint);
+        }
+    }
+
 }
