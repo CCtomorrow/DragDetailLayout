@@ -1,84 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <Button
-        android:id="@+id/change_text"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="切换文字"/>
+        android:orientation="vertical">
 
-    <com.ai.dragdetaillayout.FitAvoidView
-        android:id="@+id/fitAvoidView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@android:color/white"
-        android:padding="5dp"
-        android:src="@drawable/gift"
-        android:text="测试"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        app:borderLineWidth="2dp"
-        app:bottomBorderLineColor="@color/colorAccent"
-        app:leftBorderLineColor="@color/colorPrimary"
-        app:rightBorderLineColor="@color/colorAccent"
-        app:topBorderLineColor="@color/colorPrimary"/>
+        <Button
+            android:id="@+id/change_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="切换文字"/>
 
-    <!--android:drawableTop="@drawable/gift"-->
-    <!--android:drawableBottom="@drawable/gift"-->
-    <com.ai.dragdetaillayout.PicsurroundView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:background="@color/colorPrimary"
-        android:drawableLeft="@drawable/gift"
-        android:drawablePadding="10dp"
-        android:drawableRight="@drawable/gift"
-        android:padding="5dp"
-        app:bottomText="是不是"
-        app:bottomTextColor="@android:color/white"
-        app:bottomTextSize="20sp"
-        app:topText="你好"
-        app:topTextBold="true"
-        app:topTextColor="@android:color/white"
-        app:topTextSize="20sp"/>
+        <com.ai.dragdetaillayout.FitAvoidView
+            android:id="@+id/fitAvoidView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/white"
+            android:padding="5dp"
+            android:src="@drawable/gift"
+            android:text="测试"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            app:borderLineWidth="2dp"
+            app:bottomBorderLineColor="@color/colorAccent"
+            app:leftBorderLineColor="@color/colorPrimary"
+            app:rightBorderLineColor="@color/colorAccent"
+            app:topBorderLineColor="@color/colorPrimary"/>
 
-    <com.ai.dragdetaillayout.ZodiacsAfoulView
-        android:id="@+id/zodiacsAfoulView"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:background="@color/colorAccent"
-        android:drawableLeft="@drawable/gift"
-        android:drawableRight="@drawable/gift"
-        android:text="你好"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        app:drawableMiddle="@mipmap/ic_launcher"/>
+        <com.ai.dragdetaillayout.TitleContentView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:background="@color/colorAccent"
+            android:padding="5dp"
+            android:textColor="@android:color/holo_green_light"
+            android:textSize="17sp"
+            app:twotextPadding="5dp"/>
 
-    <com.ai.dragdetaillayout.LiteWeekView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:background="@color/colorPrimary"
-        android:drawablePadding="20dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        android:src="@mipmap/ic_launcher"
-        app:bottomText="星期五"
-        app:bottomTextBold="true"
-        app:bottomTextColor="@color/colorAccent"
-        app:bottomTextSize="16sp"
-        app:topText="Fri"
-        app:topTextColor="@color/colorAccent"
-        app:topTextSize="14sp"/>
+        <com.ai.dragdetaillayout.LiteLuopanView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="30dp"
+            android:drawablePadding="5dp"
+            app:bottomText="是不是"
+            app:bottomTextBold="true"
+            app:bottomTextSize="16sp"
+            app:lite_compass_gold_src="@drawable/yuanbao"
+            app:lite_img_src="@drawable/luopan"
+            app:topText="你好"/>
 
-</LinearLayout>
+        <!--android:drawableTop="@drawable/gift"-->
+        <!--android:drawableBottom="@drawable/gift"-->
+        <com.ai.dragdetaillayout.PicsurroundView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@color/colorPrimary"
+            android:drawableLeft="@drawable/gift"
+            android:drawablePadding="10dp"
+            android:drawableRight="@drawable/gift"
+            android:padding="5dp"
+            app:bottomText="是不是"
+            app:bottomTextColor="@android:color/white"
+            app:bottomTextSize="20sp"
+            app:topText="你好"
+            app:topTextBold="true"
+            app:topTextColor="@android:color/white"
+            app:topTextSize="20sp"/>
+
+        <com.ai.dragdetaillayout.ZodiacsAfoulView
+            android:id="@+id/zodiacsAfoulView"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@color/colorAccent"
+            android:drawableLeft="@drawable/gift"
+            android:drawableRight="@drawable/gift"
+            android:text="你好"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:drawableMiddle="@mipmap/ic_launcher"/>
+
+        <com.ai.dragdetaillayout.LiteWeekView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:background="@color/colorPrimary"
+            android:drawablePadding="20dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:src="@mipmap/ic_launcher"
+            app:bottomText="星期五"
+            app:bottomTextBold="true"
+            app:bottomTextColor="@color/colorAccent"
+            app:bottomTextSize="16sp"
+            app:topText="Fri"
+            app:topTextColor="@color/colorAccent"
+            app:topTextSize="14sp"/>
+
+    </LinearLayout>
+</ScrollView>

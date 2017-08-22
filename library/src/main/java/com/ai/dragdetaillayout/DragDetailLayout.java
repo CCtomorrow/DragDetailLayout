@@ -155,17 +155,22 @@ public class DragDetailLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        boolean intercepted = false;
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                super.onInterceptTouchEvent(ev);
+                // super.onInterceptTouchEvent(ev);
                 resetDownPosition(ev);
                 break;
             case MotionEvent.ACTION_MOVE:
-                return checkShouldInterceptEvent(ev);
+                intercepted = checkShouldInterceptEvent(ev);
+                break;
+            case MotionEvent.ACTION_UP:
+                intercepted = false;
+                break;
             default:
                 break;
         }
-        return false;
+        return intercepted;
     }
 
     @Override
@@ -178,6 +183,7 @@ public class DragDetailLayout extends ViewGroup {
                 recycleVelocityTracker();
                 break;
             case MotionEvent.ACTION_MOVE:
+                /*
                 float distance = ev.getY() - mInitialInterceptY;
                 if (mCurrentIndex == DragDetailLayoutPageState.BEHIND) {
                     if (distance > 0) {
@@ -202,7 +208,7 @@ public class DragDetailLayout extends ViewGroup {
                         mTopView.dispatchTouchEvent(ev);
                         return false;
                     }
-                }
+                }*/
                 scrolltoPosition(ev);
                 break;
             default:

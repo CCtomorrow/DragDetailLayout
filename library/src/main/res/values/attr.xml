@@ -35,6 +35,10 @@
     <attr name="bottomBorderLineWidth" format="dimension"/>
     <attr name="bottomBorderLineColor" format="color"/>
 
+    <attr name="lite_img_src" format="reference"/>
+    <!--罗盘里面的元宝-->
+    <attr name="lite_compass_gold_src" format="reference"/>
+
     <declare-styleable name="FitAvoidView">
         <attr name="android:src"/>
         <attr name="android:text"/>
@@ -109,6 +113,39 @@
         <attr name="bottomBorderLineColor"/>
     </declare-styleable>
 
+    <declare-styleable name="LiteLuopanView">
+        <attr name="lite_img_src"/>
+        <!--罗盘里面的元宝-->
+        <attr name="lite_compass_gold_src"/>
+
+        <attr name="android:drawablePadding"/>
+        <attr name="twotextPadding"/>
+
+        <!--这里就代表左边的Text-->
+        <attr name="topTextColor"/>
+        <attr name="topTextSize"/>
+        <attr name="topTextBold"/>
+        <attr name="topText"/>
+
+        <!--这里就代表右边的Text-->
+        <attr name="bottomTextColor"/>
+        <attr name="bottomTextSize"/>
+        <attr name="bottomTextBold"/>
+        <attr name="bottomText"/>
+
+        <attr name="borderLineWidth"/>
+        <attr name="borderLineColor"/>
+
+        <attr name="leftBorderLineWidth"/>
+        <attr name="leftBorderLineColor"/>
+        <attr name="topBorderLineWidth"/>
+        <attr name="topBorderLineColor"/>
+        <attr name="rightBorderLineWidth"/>
+        <attr name="rightBorderLineColor"/>
+        <attr name="bottomBorderLineWidth"/>
+        <attr name="bottomBorderLineColor"/>
+    </declare-styleable>
+
     <declare-styleable name="PicsurroundView">
         <attr name="android:drawableLeft"/>
         <attr name="android:drawableTop"/>
@@ -139,6 +176,13 @@
         <attr name="rightBorderLineColor"/>
         <attr name="bottomBorderLineWidth"/>
         <attr name="bottomBorderLineColor"/>
+    </declare-styleable>
+
+    <declare-styleable name="HLTitleContentView">
+        <attr name="android:textColor"/>
+        <attr name="android:textSize"/>
+        <!--两行文字之间的距离-->
+        <attr name="twotextPadding"/>
     </declare-styleable>
 
 </resources>
